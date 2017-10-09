@@ -1,2 +1,2 @@
 # CS362-004-F2017
-This is my assignment-2 submission!
+CS 362. SOFTWARE ENGINEERING II Fall 2017 (Ecampus-Distance Education)
