@@ -3,7 +3,10 @@ CFLAGS = -Wall -fpic -coverage -lm
 rngs.o: rngs.h rngs.c
 	gcc -c rngs.c -g  $(CFLAGS)
 
-dominion.o: dominion.h dominion.c card_helpers.h card_helpers.c rngs.o
+card_helpers.o: card_helpers.h card_helpers.c
+	gcc -c card_helpers.c -g  $(CFLAGS)
+	
+dominion.o: dominion.h dominion.c card_helpers.o rngs.o
 	gcc -c dominion.c -g  $(CFLAGS)
 
 playdom: dominion.o playdom.c
@@ -24,16 +27,79 @@ testAll: dominion.o testSuite.c
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
 
-runtests: testDrawCard 
-	./testDrawCard &> unittestresult.out
+#UNIT TESTS	FOR NON-CARD FUNCTIONS
+testGetCost: unittest1.c dominion.o rngs.o
+	gcc -o testGetCost -g unittest1.c dominion.o rngs.o $(CFLAGS)	
+
+testIsGameOver: unittest2.c dominion.o rngs.o
+	gcc -o testIsGameOver -g  unittest2.c dominion.o rngs.o $(CFLAGS)
+
+testWhoseTurn: unittest3.c dominion.o rngs.o
+	gcc -o testWhoseTurn -g  unittest3.c dominion.o rngs.o $(CFLAGS)
+	
+testHandCard: unittest4.c dominion.o rngs.o interface.o
+	gcc -o testHandCard -g unittest4.c dominion.o rngs.o interface.o $(CFLAGS)
+#END UNIT TESTS	FOR NON-CARD FUNCTIONS
+
+#UNIT TESTS	FOR CARD FUNCTIONS
+cardtest1: cardtest1.c dominion.o rngs.o
+	gcc -o cardtest1 -g  cardtest1.c dominion.o rngs.o $(CFLAGS)
+
+cardtest2: cardtest2.c dominion.o rngs.o
+	gcc -o cardtest2 -g  cardtest2.c dominion.o rngs.o $(CFLAGS)
+	
+cardtest3: cardtest3.c dominion.o rngs.o
+	gcc -o cardtest3 -g  cardtest3.c dominion.o rngs.o $(CFLAGS)
+	
+cardtest4: cardtest4.c dominion.o rngs.o
+	gcc -o cardtest4 -g  cardtest4.c dominion.o rngs.o $(CFLAGS)
+#END UNIT TESTS	FOR CARD FUNCTIONS
+
+#RULE TO MAKE ALL TESTS AND OUTPUT TO unittestresult.out 
+runtests: cardtest4 cardtest3 cardtest2 cardtest1 testHandCard testWhoseTurn testIsGameOver testGetCost
+	./cardtest4 &> unittestresult.out
+	gcov cardtest4.c -b >> unittestresult.out
+	cat cardtest4.c.gcov >> unittestresult.out
+	
+	./cardtest3 >> unittestresult.out
+	gcov cardtest3.c -b >> unittestresult.out
+	cat cardtest3.c.gcov >> unittestresult.out
+	
+	./cardtest2 >> unittestresult.out
+	gcov cardtest2.c -b >> unittestresult.out
+	cat cardtest2.c.gcov >> unittestresult.out
+	
+	./cardtest1 >> unittestresult.out
+	gcov cardtest1.c -b >> unittestresult.out
+	cat cardtest1.c.gcov >> unittestresult.out
+	
+	./testHandCard >> unittestresult.out
+	gcov unittest4.c -b >> unittestresult.out
+	cat unittest4.c.gcov >> unittestresult.out
+
+	./testWhoseTurn >> unittestresult.out
+	gcov unittest3.c -b >> unittestresult.out
+	cat unittest3.c.gcov >> unittestresult.out
+	
+	./testIsGameOver >> unittestresult.out
+	gcov unittest2.c -b >> unittestresult.out
+	cat unittest2.c.gcov >> unittestresult.out 
+	
+	./testGetCost >> unittestresult.out
+	gcov unittest1.c -b >> unittestresult.out
+	cat unittest1.c.gcov >> unittestresult.out
+	
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
-
+#END TEST OUTPUT RULE
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
-clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+cleantests:
+	rm -f cardtest1.exe cardtest2.exe cardtest3.exe cardtest4.exe testGetCost.exe testIsGameOver.exe testWhoseTurn.exe testHandCard.exe
+	
+clean: cleantests
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe badTestDrawCard.exe 
