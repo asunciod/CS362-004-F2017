@@ -1,6 +1,12 @@
 #include "dominion.h"
 #include "dominion_helpers.h"
-#include "card_helpers.c"
+
+//Not compiling with VS2017
+#if (_MSC_VER != 1911)
+	//include this header file
+	#include "card_helpers.c"
+#endif
+
 #include "rngs.h"
 #include <stdio.h>
 #include <math.h>
