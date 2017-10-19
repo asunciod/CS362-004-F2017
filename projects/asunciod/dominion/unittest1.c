@@ -20,6 +20,8 @@
 // set NOISY_TEST to 0 to remove printfs from output
 #define NOISY_TEST 1
 #define NUM_CARDS 27
+#define FUNCTION_NAME "getCost()"
+
 int main() {
 	int i;
 	int seed = 1000;
@@ -33,7 +35,7 @@ int main() {
 		0, 2, 5, 8, 0, 3, 6, 6, 5, 4, 4, 5, 4, 4, 3, 4, 3, 5, 3, 5, 3, 4, 2, 5, 4, 4, 4
 	};
 
-	printf("TESTING getCost():\n");
+	printf("----------------- Testing function: %s ----------------\n\n", FUNCTION_NAME);
 
 
 	memset(&G, 23, sizeof(struct gameState));   // clear the game state
@@ -60,10 +62,20 @@ int main() {
 		for (i = -1; i <= NUM_CARDS; i++) {
 
 			if (i < 0 || i > NUM_CARDS - 1) {
-				assert(getCost(i) == -1);
+				if (getCost(i) == -1) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 			else {
-				assert(getCost(i) == card_costs[i]);
+				if (getCost(i) == card_costs[i]) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 
 		}
@@ -90,7 +102,13 @@ int main() {
 			int current_card = G.hand[current_player][j];
 
 			for (i = 0; i < NUM_CARDS; i++) {
-				assert(getCost(current_card) == card_costs[current_card]);
+				
+				if (getCost(current_card) == card_costs[current_card]) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 		}
 		
@@ -114,7 +132,13 @@ int main() {
 		//check all valid card costs
 		for (int j = 0; j < 5; j++) {
 			int current_card = G.hand[current_player][j];
-			assert(getCost(current_card) == -1);
+			
+			if (getCost(current_card) == -1) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
 		}
 
 		#if (NOISY_TEST == 1)
@@ -123,7 +147,7 @@ int main() {
 		//END TEST 3
 	}
 
-	printf("All tests passed!\n");
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", FUNCTION_NAME);
 
 	return 0;
 }

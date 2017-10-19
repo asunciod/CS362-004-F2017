@@ -36,7 +36,7 @@ int main() {
 	// initialize a game state and player cards
 	initializeGame(numPlayers, k, seed, &G);
 
-	printf("----------------- Testing Card: %s ----------------\n", TESTCARD);
+	printf("----------------- Testing Card: %s ----------------\n\n", TESTCARD);
 
 	// ----------- TEST 1: check outpost played value for player --------------
 	printf("TEST 1: check outpost played value for player increments + 1 each time\n");
@@ -53,15 +53,16 @@ int main() {
 		//run card effect
 		cardEffect(outpost, choice1, choice2, choice3, &testG, handpos, &bonus);
 	}
-
-	
-	// !! below two lines commented out in order to run gcov !!
-	//printf("loop count = %d, outpostPlayed expected value = %d\n", loopCount, loopCount);
-	//assert(testG.outpostPlayed == loopCount);
-	
+		
 	//assertion created to run program and not fail assertion
-	printf("loop count = %d, outpostPlayed expected value = %d\n", 0, 0);
-	assert(testG.outpostPlayed == 0);
+	printf("loop count = %d, outpostPlayed expected value = %d\n", loopCount, loopCount);
+
+	if (testG.outpostPlayed == loopCount) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
 
 
 	// ----------- TEST 2: check handCount, and playedCount when outpost is used --------------
@@ -84,13 +85,25 @@ int main() {
 
 
 	printf("current handCount = %d, expected handCount = %d\n", currentHandCount, 0);
-	assert(testG.handCount[0] == 0);
+
+	if (testG.handCount[0] == 0) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
 
 	printf("current playedCardCount = %d, expected playedCardCount = %d\n", 0, loopCount);
-	assert(testG.playedCardCount == loopCount);
 		
+	if (testG.playedCardCount == loopCount) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
 
-	printf("\n >>>>> SUCCESS: Testing complete %s <<<<<\n\n", TESTCARD);
+
+	printf("\n\n >>>>>Testing complete for %s <<<<<\n\n", TESTCARD);
 
 
 	return 0;

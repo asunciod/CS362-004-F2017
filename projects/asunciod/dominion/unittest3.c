@@ -18,6 +18,7 @@
 
 // set NOISY_TEST to 0 to remove printfs from output
 #define NOISY_TEST 1
+#define FUNCTION_NAME "whoseTurn()"
 
 int main() {
 	int seed = 1000;
@@ -29,7 +30,7 @@ int main() {
 		, remodel, smithy, village, baron, great_hall };
 	struct gameState G;
 
-	printf("TESTING whoseTurn():\n");
+	printf("----------------- Testing function: %s ----------------\n\n", FUNCTION_NAME);
 
 	for (q = 0; q < games_to_play; q++) {
 
@@ -61,7 +62,12 @@ int main() {
 			#endif
 
 			//current player turn should always be 0, then 1
-			assert(current_player == p % 2);
+			if (current_player == p % 2) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
 
 			//TEST 2 - check next player before turn ends
 			#if (NOISY_TEST == 1)
@@ -73,7 +79,12 @@ int main() {
 			#endif
 
 			//next player turn should always be 1, then 0
-			assert(next_player == (p + 1) % 2);
+			if (next_player == (p + 1) % 2) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
 
 			//END TURN -- end current player's turn
 			#if (NOISY_TEST == 1)
@@ -94,13 +105,18 @@ int main() {
 			#endif
 
 			//current player turn should always be 0, then 1
-			assert(current_player == next_player);
+			if (current_player == next_player) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
 
 		}
 
 	}
 
-	printf("\nAll tests passed!\n");
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", FUNCTION_NAME);
 
 	return 0;
 }

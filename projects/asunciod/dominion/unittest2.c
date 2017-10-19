@@ -19,6 +19,7 @@
 
 // set NOISY_TEST to 0 to remove printfs from output
 #define NOISY_TEST 1
+#define FUNCTION_NAME "isGameOver()"
 
 int main() {
 	int i;
@@ -31,7 +32,7 @@ int main() {
 	int games_to_play = 4;
 	int is_game_over = 0;
 
-	printf("TESTING isGameOver():\n");
+	printf("----------------- Testing function: %s ----------------\n\n", FUNCTION_NAME);
 
 
 	memset(&G, 23, sizeof(struct gameState));   // clear the game state
@@ -87,16 +88,31 @@ int main() {
 
 		//game should not be over since it is the start of a new game
 		is_game_over = isGameOver(&G);
-		assert(is_game_over == 0);
+		if (is_game_over == 0) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		for (i = 0; i < 25; i++) {
 
 			is_game_over = isGameOver(&G);
 			if (i < 3) {
-				assert(is_game_over == 0);
+				if (is_game_over == 0) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 			else {
-				assert(is_game_over == 1);
+				if (is_game_over == 1) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 
 			int supply_count = G.supplyCount[i];
@@ -108,10 +124,20 @@ int main() {
 			is_game_over = isGameOver(&G);
 
 			if (i < 2) {
-				assert(is_game_over == 0);
+				if (is_game_over == 0) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 			else {
-				assert(is_game_over == 1);
+				if (is_game_over == 1) {
+					printf("TEST PASS: SUCCESS...\n");
+				}
+				else {
+					printf("TEST PASS: FAILED...\n");
+				}
 			}
 
 		}
@@ -133,7 +159,12 @@ int main() {
 
 		//check before setting 2 supplyCount to 0
 		is_game_over = isGameOver(&G);
-		assert(is_game_over == 0);
+		if (is_game_over == 0) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		//select 2 supplyCounts and set to 0
 		G.supplyCount[8] = 0;
@@ -141,7 +172,12 @@ int main() {
 
 		//check after setting 2 supplyCount to 0
 		is_game_over = isGameOver(&G);
-		assert(is_game_over == 0);
+		if (is_game_over == 0) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		#if (NOISY_TEST == 1)
 			printf("\nTEST 2 PASSED........\n\n");
@@ -160,22 +196,31 @@ int main() {
 
 		//check before setting supplyCount[province] to 0
 		is_game_over = isGameOver(&G);
-		assert(is_game_over == 0);
+		if (is_game_over == 0) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		G.supplyCount[province] = 0;
 
 		//check after setting supplyCount[province] to 0
 		is_game_over = isGameOver(&G);
-		assert(is_game_over == 1);
-
+		if (is_game_over == 1) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		#if (NOISY_TEST == 1)
-			printf("\nTEST 3 PASSED........\n\n");
+			printf("\nTEST 3 PASSED........\n");
 		#endif
 		//END TEST 3		
 	}
 
-	printf("All tests passed!\n");
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", FUNCTION_NAME);
 
 	return 0;
 }

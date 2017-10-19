@@ -30,33 +30,51 @@ interface.o: interface.h interface.c
 #UNIT TESTS	FOR NON-CARD FUNCTIONS
 testGetCost: unittest1.c dominion.o rngs.o
 	gcc -o testGetCost -g unittest1.c dominion.o rngs.o $(CFLAGS)	
+	testGetCost
+	gcov unittest1.c -b
 
 testIsGameOver: unittest2.c dominion.o rngs.o
 	gcc -o testIsGameOver -g  unittest2.c dominion.o rngs.o $(CFLAGS)
-
+	testIsGameOver
+	gcov unittest2.c -b
+	
 testWhoseTurn: unittest3.c dominion.o rngs.o
 	gcc -o testWhoseTurn -g  unittest3.c dominion.o rngs.o $(CFLAGS)
+	testWhoseTurn
+	gcov unittest3.c -b
 	
 testHandCard: unittest4.c dominion.o rngs.o interface.o
 	gcc -o testHandCard -g unittest4.c dominion.o rngs.o interface.o $(CFLAGS)
+	testHandCard
+	gcov unittest4.c -b
+	
 #END UNIT TESTS	FOR NON-CARD FUNCTIONS
 
 #UNIT TESTS	FOR CARD FUNCTIONS
 cardtest1: cardtest1.c dominion.o rngs.o
 	gcc -o cardtest1 -g  cardtest1.c dominion.o rngs.o $(CFLAGS)
+	cardtest1
+	gcov cardtest1.c -b
 
 cardtest2: cardtest2.c dominion.o rngs.o
 	gcc -o cardtest2 -g  cardtest2.c dominion.o rngs.o $(CFLAGS)
+	cardtest2
+	gcov cardtest2.c -b
 	
 cardtest3: cardtest3.c dominion.o rngs.o
 	gcc -o cardtest3 -g  cardtest3.c dominion.o rngs.o $(CFLAGS)
+	cardtest3
+	gcov cardtest3.c -b
 	
 cardtest4: cardtest4.c dominion.o rngs.o
 	gcc -o cardtest4 -g  cardtest4.c dominion.o rngs.o $(CFLAGS)
+	cardtest4
+	gcov cardtest4.c -b
+	
 #END UNIT TESTS	FOR CARD FUNCTIONS
 
 #RULE TO MAKE ALL TESTS AND OUTPUT TO unittestresult.out 
-runtests: cardtest4 cardtest3 cardtest2 cardtest1 testHandCard testWhoseTurn testIsGameOver testGetCost
+rununittests: cardtest4 cardtest3 cardtest2 cardtest1 testHandCard testWhoseTurn testIsGameOver testGetCost
 	./cardtest4 &> unittestresult.out
 	gcov cardtest4.c -b >> unittestresult.out
 	cat cardtest4.c.gcov >> unittestresult.out
@@ -92,6 +110,11 @@ runtests: cardtest4 cardtest3 cardtest2 cardtest1 testHandCard testWhoseTurn tes
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 #END TEST OUTPUT RULE
+
+runtests: testDrawCard 
+	./testDrawCard &> unittestresult.out
+	gcov dominion.c >> unittestresult.out
+	cat dominion.c.gcov >> unittestresult.out
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
