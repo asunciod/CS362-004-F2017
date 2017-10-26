@@ -68,7 +68,7 @@ int main() {
 	printf("current deckcount = %d\n, deck shuffle expected = 1\n", current_deckcount);
 	assert(isShuffled == 1);
 
-	// ----------- TEST 2: check smithy card action; +3 draw --------------
+	// ----------- TEST 2: check adventurer card action --------------
 	printf("TEST 2: check hand and discard count\n");
 
 	// copy the game state to a test case
@@ -90,7 +90,7 @@ int main() {
 	assert(testG.discardCount[0] > 0);
 		
 	// ----------- TEST 3: check if last two cards in hand are treasure cards --------------
-	printf("TEST 1: check if deck is shuffled when deckcount < 1\n");
+	printf("TEST 3: check last two cards in hand to see if they are treasure cards\n");
 
 	// copy the game state to a test case
 	memcpy(&testG, &G, sizeof(struct gameState));
