@@ -1,52 +1,140 @@
-//Card test for the Smithy function
+/* -----------------------------------------------------------------------
+* David Asuncion
+* CS 362-400
+* Assignment 3 - cardtest2.c
+* testing card: adventurer
+*
+* cardtest2: cardtest2.c dominion.o rngs.o
+*      gcc -o cardtest2 -g  cardtest2.c dominion.o rngs.o $(CFLAGS)
+* -----------------------------------------------------------------------
+*/
 
 #include "dominion.h"
+#include "dominion_helpers.h"
+#include <string.h>
 #include <stdio.h>
+#include <assert.h>
+#include "rngs.h"
+#include <stdlib.h>
 
-//Function to output if the test I did passed or failed
-void Pass_Fail(int check)
-{
-	if(check == 0)
-	{
-		printf("Test PASSED succesfuly!\n");
+#define TESTCARD "adventurer"
+
+int main() {
+
+	int newCards = 0;
+	int current_handcount = 5;
+	int current_discardcount = 0;
+	int i;
+	int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
+	int seed = 1000;
+	int numPlayers = 2;
+	struct gameState G, testG;
+	int k[10] = { adventurer, embargo, village, minion, mine, cutpurse,
+		sea_hag, tribute, smithy, council_room };
+
+	// initialize a game state and player cards
+	initializeGame(numPlayers, k, seed, &G);
+
+	printf("----------------- Testing Card: %s ----------------\n\n", TESTCARD);
+
+	// ----------- TEST 1: check if deck is shuffled when deckcount < 1 --------------
+	printf("TEST 1: check if deck is shuffled when deckcount < 1\n");
+
+	// copy the game state to a test case
+	memcpy(&testG, &G, sizeof(struct gameState));
+	testG.hand[0][0] = adventurer;
+	
+
+	int current_deckcount = testG.deckCount[0];
+	int currentDeck[MAX_DECK];
+	int isShuffled = 0;
+
+	for (i = 0; i < testG.deckCount[1]; i++) {
+		currentDeck[i] = testG.deck[0][i];
 	}
-	else
-		printf("TEST FAILED");
-}
+	
+	//run card effect
+	cardEffect(adventurer, choice1, choice2, choice3, &testG, handpos, &bonus);
 
-//unit test function for the smithy card
-void Smith()
-{
-//Random seed
-int seed = 500;
-struct gameState game;
-//Cards needed for initialization
-int cards[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
-//Initialize the game
-initializeGame(2, cards, seed, &game);
+	for (i = 0; i < testG.deckCount[1]; i++) {
+		isShuffled = currentDeck[i] != testG.deck[0][i] ? 1 : isShuffled;
+	}
 
-	printf("\n\nCARD TEST 2 SMITHY-----------------------------------------------\n\n");
-	//Check how many cards are in the hand and then run the smithy function
-	printf("\nChecking to see how many cards are in the hand initially\n");
-	printf("Number of cards in players hand: %d\n", game.handCount[1]);
-	int	temp1 = game.handCount[1];
-	printf("\nChecking to see if the smithy card will run succesfully:\n");
-	int rand = smithy_func(1, &game, 0);
-	//Check if it passed or failed
-	Pass_Fail(rand);
-	//Check to see if the new number of cards is correct
-	printf("\nChecking to see if the amount of cards has increased by 2 (Should only increase by 2 because of the smithy card being discarded)\n");
-	printf("Number of cards in players hand: %d\n", game.handCount[1]);
-		//If the amount of cards is too high print a failed run.
-		if(game.handCount[1] > temp1+2)
-		{
-		Pass_Fail(1);
+	printf("current deckcount = %d\n, deck shuffle expected = 0\n", current_deckcount);
+	if (isShuffled == 0) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
+
+	// ----------- TEST 2: check adventurer card action --------------
+	printf("TEST 2: check hand and discard count\n");
+
+	// copy the game state to a test case
+	memcpy(&testG, &G, sizeof(struct gameState));
+	testG.hand[0][0] = adventurer;
+
+	newCards = 2;	//hand should have two new treasure cards
+	current_handcount = testG.handCount[0];
+	
+	int expected_handcount = current_handcount + newCards;
+
+	//run card effect
+	cardEffect(adventurer, choice1, choice2, choice3, &testG, handpos, &bonus);
+
+	printf("current handcount = %d, expected handcount = %d\n", current_handcount, expected_handcount);
+	if (expected_handcount == testG.handCount[0]) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
+
+	printf("current discardcount = %d, expected discardcount > 0\n", current_discardcount);
+	
+	if (testG.discardCount[0] > 0) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
+
+	// ----------- TEST 3: check if last two cards in hand are treasure cards --------------
+	printf("TEST 3: check last two cards in hand to see if they are treasure cards\n");
+
+	// copy the game state to a test case
+	memcpy(&testG, &G, sizeof(struct gameState));
+	testG.hand[0][0] = adventurer;
+
+	int areTreasureCards = 0;
+
+	//run card effect
+	cardEffect(adventurer, choice1, choice2, choice3, &testG, handpos, &bonus);
+
+	//check if the last two cards in hand are treasure cards
+	for (i = testG.handCount[0] - 1; i > testG.handCount[0] - 3; i--) {
+		int current_card = testG.hand[0][i];
+		if (current_card == copper || current_card == silver || copper == gold) {
+			areTreasureCards = 1;
 		}
-	printf("\n\nCARD TEST 2 SMITHY END-------------------------------------------\n\n");
+		else {
+			areTreasureCards = 0;
+		}
+	}
+
+	printf("expected last 2 cards in hand are treasure cards = 1\n");
+	if (areTreasureCards == 1) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
+
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", TESTCARD);
+
+
+	return 0;
 }
 
-int main()
-{
-Smith();
-return 0;
-}
+

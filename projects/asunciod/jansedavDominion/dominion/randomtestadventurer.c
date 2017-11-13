@@ -1,118 +1,97 @@
-// Card test for adventurer
+/* -----------------------------------------------------------------------
+* David Asuncion
+* CS 362-400
+* Assignment 4 - randomtestadventurer.c
+* testing card: adventurer
+*
+* randomtestadventurer: randomtestadventurer.c dominion.o rngs.o
+*      gcc -o randomtestadventurer -g  randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+* -----------------------------------------------------------------------
+*/
 
 #include "dominion.h"
+#include "dominion_helpers.h"
+#include "card_helpers.h"
+#include <string.h>
 #include <stdio.h>
-#include <math.h>
+#include <assert.h>
+#include "rngs.h"
 #include <stdlib.h>
 
-void adventur()
-{
-struct gameState game;
-//Cards needed for initialization
-int cards[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
+#define TESTCARD "adventurer"
 
-//These hold the successes and failures of each variable test
-int treasuresucc = 0;
-int treasurefail = 0;
-int handsucc = 0;
-int handfail = 0;
-int cardfail = 0;
-int cardsucc = 0;
-int i;
+int main() {
 
-printf("\n\nRANDOM TESTING FOR ADVENTURER CARD START--------------------------------------------------------------\n\n");
+	int i, j;
+	int seed = 1000;
+	int numPlayers = 2;
+	int temphand[MAX_HAND];
+	struct gameState G, testG;
+	int k[10] = { adventurer, embargo, village, minion, mine, cutpurse,
+		sea_hag, tribute, smithy, council_room };
 
-//Run it 200 times
-for(i = 0; i < 200; i++)
-{
-printf("\nRun #: %d\n", i);
-//Random treasure amount
-int temp1 = rand() % 20;
-//Random handcount amount
-int temp2 = rand() % 20;
-//create a random hand
-int temp4 = rand() % 30;
-int temp3;
-//Random player
-int rand1 = rand() % 4;
+	// initialize a game state and player cards
+	initializeGame(numPlayers, k, seed, &G);
+
+	printf("----------------- Testing Card: %s ----------------\n\n", TESTCARD);
+
+	// ----------- TEST 1: check return value if drawnTreasure parameter is varied --------------
+	printf("TEST 1: testing drawnTreasure parameter < 1\n");
+
+	// copy the game state to a test case
+	memcpy(&testG, &G, sizeof(struct gameState));
+	testG.hand[0][0] = adventurer;
+
+	int min = 2;
+	int max = 4;
+	int drawntreasure = 0;
+
+	for (i = 0; i < 10; i++) {
+
+		//range of players between 2-4
+		numPlayers = (min + (rand() % (int)(max - min + 1)));
+
+		// initialize a game state and player cards
+		initializeGame(numPlayers, k, seed, &G);
+
+		// copy the game state to a test case
+		memcpy(&testG, &G, sizeof(struct gameState));
 
 
-printf("Currently testing player: %d\n", rand1);
-//Random seed number
-int rand2 = rand() % 1000;
-//Print off the starting hand counts and treasure for comparison
-printf("Hand count BEFORE card is played: %d\n", temp2);
+		for (j = 0; j < numPlayers; j++) {
+			
+			//adventurerCard(0, &testG, j, 0, temphand, 0);
+			//adventurer_func(&drawntreasure, state, currentPlayer, cardDrawn, temphand, z);
+			adventurer_func(&drawntreasure, &testG, j, 0, temphand, 0);
 
-printf("Treasure BEFORE card is played: %d\n", temp1);
-//Temporary hand that is created randomly
-int temphand[temp4];
-//Set treasure to its random number
-int treasure = temp1;
+			int countTreasureCards = 0;
 
-//Initialize the game.
-initializeGame(rand1, cards, rand2, &game);
-//Set hand count to its random number
-game.handCount[rand1] = temp2;
-//Run the adventurer function to see if it was successful
-temp3 = adventurer_func(&treasure, &game, rand1, 0, temphand, 0);
+			//count how many treasure cards are in hand for randomly selected player
+			for (int k = 0; k < 5; k++) {
+				int card_val = testG.hand[j][k];
+				if (card_val == 4 || card_val == 5 || card_val == 6) {
+					countTreasureCards++;
+				}
+			}
+			
+			printf("number of treasure cards expected > %d, actual = %d\n", 2, countTreasureCards);
+			if (countTreasureCards >= 2) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
+			
+			endTurn(&testG);
+		}
 
-//Find the counts of handcount and treasure after it was ran.
-printf("Hand count AFTER card is played: %d\n", game.handCount[rand1]);
-printf("Treasure count AFTER card is played: %d\n", treasure);
 
-//I purposely fail tests here to make sure that my tests will work is something is incorrect or correct.
-if(i < 10)
-{
-temp1 = treasure;
-temp2 = -1;
-temp3 = -1;
+	}
+
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", TESTCARD);
+
+
+	return 0;
 }
 
-	//Keep track of succesful amoounts of treasure and wrong amounts.
-	if(treasure > temp1+1)
-	{
-	printf("\nFAILED TREASURE COUNT\n");
-	treasurefail++;
-	}
-	else
-	{
-	treasuresucc++;
-	}
-	//Keep track of the number of successful and failed hand counts
-	if(game.handCount[rand1] != temp2+1)
-	{
-	printf("\nFAILED HANDCOUT\n");
-	handfail++;
-	}
-	else
-	{
-	handsucc++;
-	}
-	//Keep track of the number of successful card plays and failures
-	if(temp3 == 0)
-	{
-	cardsucc++;
-	}
-	else
-	{
-	printf("\nFAILED CARD\n");
-	cardfail++;
-	}
-}
 
-//Printing the totals for the 200 runs.
-printf("\n\n TOTALS:\n");
-printf("Number of SUCCESFUL adventure card runs: %d\n", cardsucc);
-printf("Number of FAILED adventure card runs: %d\n", cardfail);
-printf("Number of SUCCESFUL handcounts: %d\n", handsucc);
-printf("Number of FAILED handcounts: %d\n", handfail);
-printf("Number of SUCCESFUL treasure counts: %d\n", treasurefail);
-printf("Number of FAILED treasure counts: %d\n", treasuresucc);
-printf("\n\nRANDOM TESTING FOR ADVENTURER CARD END---------------------------------------------------------------\n");
-}
-
-int main()
-{
-adventur();
-return 0;
-}

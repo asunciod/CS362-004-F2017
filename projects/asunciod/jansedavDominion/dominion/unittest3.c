@@ -1,59 +1,122 @@
-//Unit Test for End Turn function
+/* -----------------------------------------------------------------------
+* David Asuncion
+* CS 362-400
+* Assignment 3 - unittest3.c
+* testing function: whoseTurn()
+*
+* testWhoseTurn: unittest3.c dominion.o rngs.o
+*      gcc -o testWhoseTurn -g  unittest3.c dominion.o rngs.o $(CFLAGS)
+* -----------------------------------------------------------------------
+*/
 
 #include "dominion.h"
+#include "dominion_helpers.h"
+#include <string.h>
 #include <stdio.h>
+#include <assert.h>
+#include "rngs.h"
 
-//Function to test if the end turn function in dominion.c works properly
-void End_Turn()
-{
-struct gameState game;
-int seed = 100;
-//Get all the cards in the deck that are possible
-int cards[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
+// set NOISY_TEST to 0 to remove printfs from output
+#define NOISY_TEST 1
+#define FUNCTION_NAME "whoseTurn()"
 
-//Initialize the game
-initializeGame(2, cards, seed, &game);
+int main() {
+	int seed = 1000;
+	int numPlayer = 2;
+	int turn_checks = 5;
+	int games_to_play = 4;
+	int p, q;
+	int k[10] = { adventurer, council_room, feast, gardens, mine
+		, remodel, smithy, village, baron, great_hall };
+	struct gameState G;
 
-printf("\n\n UNIT TEST 3 ENDTURN-----------------------------------------------------\n\n");
-int i;
+	printf("----------------- Testing function: %s ----------------\n\n", FUNCTION_NAME);
 
-		//Run each test a couple times to make sure the results are correct
-		for(i = 0; i < 2; i++)
+	for (q = 0; q < games_to_play; q++) {
+
+		//initialize games up to 4 times
+		memset(&G, 23, sizeof(struct gameState));   // clear the game state
+		initializeGame(numPlayer, k, seed, &G); // initialize a new game
+
+		#if (NOISY_TEST == 1)
+			printf("\nSTARTING GAME NUMBER %d........\n", q + 1);
+		#endif
+
+		//loop to check current and next players
+		for (p = 0; p < turn_checks; p++)
 		{
-			//Check to see which player you are on and if it is correct and end their turn
-			int who = whoseTurn(&game);
-			int	who2 = who+1;
-			printf("Checking to see if it is Player 1's turn and ending the turn:\n");
-			printf(" The current player that is up for their turn is: %d\n\n", who2);
-		//Check to see if the player is correctly player 1.
-			if(who2 != 1)
-			{
-			printf(" FAILED\n");
+
+			//get current player
+			int current_player = whoseTurn(&G);
+
+			//get who is supposed to be the next player
+			int next_player = whoseTurn(&G) == 1 ? 0 : whoseTurn(&G) + 1;
+
+			//TEST 1 - check current player before turn ends
+			#if (NOISY_TEST == 1)
+				printf("\nCURRENT TURN CHECK........\n");
+			#endif
+
+			#if (NOISY_TEST == 1)
+				printf("current player = %d, expected = %d\n", current_player, p % 2);
+			#endif
+
+			//current player turn should always be 0, then 1
+			if (current_player == p % 2) {
+				printf("TEST PASS: SUCCESS...\n");
 			}
-			else
-			printf(" SUCCESS\n");
-			endTurn(&game);
-			//Make sure the new player is the correct player after the last turn was ended and then end their turn
-			who = whoseTurn(&game);
-			printf("Checking to see if it is Player 2's turn and ending the turn:\n");
-			who2 = who+1;
-			printf(" The current player that is up for their turn is: %d\n\n", who2);
-		//Check to see if the player is now player 2
-			if(who2 != 2)
-			{
-			printf(" FAILED\n");
+			else {
+				printf("TEST PASS: FAILED...\n");
 			}
-			else
-			printf(" SUCCESS\n");
-			endTurn(&game);
 
-		}	
-printf("UNIT TEST 3 ENDTURN DONE---------------------------------------------------------\n");
+			//TEST 2 - check next player before turn ends
+			#if (NOISY_TEST == 1)
+				printf("\EXPECTED NEXT TURN CHECK........\n");
+			#endif
+
+			#if (NOISY_TEST == 1)
+				printf("next player = %d, expected = %d\n", next_player, (p + 1) % 2);
+			#endif
+
+			//next player turn should always be 1, then 0
+			if (next_player == (p + 1) % 2) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
+
+			//END TURN -- end current player's turn
+			#if (NOISY_TEST == 1)
+				printf("\nEND CURRENT PLAYER TURN.\n\n");
+			#endif
+			endTurn(&G);
+
+			//TEST 3 - check current player after turn ends
+			#if (NOISY_TEST == 1)
+				printf("AFTER TURN END, CHECK CURRENT PLAYER....\n");
+			#endif
+
+			//get current player
+			current_player = whoseTurn(&G);
+
+			#if (NOISY_TEST == 1)
+				printf("current player = %d, expected = %d\n", current_player, (p + 1) % 2);
+			#endif
+
+			//current player turn should always be 0, then 1
+			if (current_player == next_player) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
+
+		}
+
+	}
+
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", FUNCTION_NAME);
+
+	return 0;
 }
-
-int main()
-{
-End_Turn();
-return 0;
-}
-
