@@ -53,7 +53,8 @@ int main() {
 			randomHandPos = rand() % 5;	//randomly select hand position
 			testG.hand[cur][randomHandPos] = outpost;
 
-			outpostCard(&testG, randomHandPos, cur);
+			//outpostCard(&testG, randomHandPos, cur);
+			outpostCard_jansedav(&testG, randomHandPos, cur);
 
 			//check outpostplayed flag
 			printf("TEST: Checking outpostPlayed flag for current player\n");

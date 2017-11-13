@@ -32,7 +32,7 @@ int main() {
 	// initialize a game state and player cards
 	initializeGame(numPlayers, k, seed, &G);
 
-	printf("----------------- Testing Card: %s ----------------\n", TESTCARD);
+	printf("----------------- Testing Card: %s ----------------\n\n", TESTCARD);
 
 	// ----------- TEST 1: check return value of garden card --------------
 	printf("TEST 1: check if deck is shuffled when deckcount < 1\n");
@@ -45,9 +45,16 @@ int main() {
 	int garden_val = cardEffect(gardens, choice1, choice2, choice3, &testG, handpos, &bonus);
 	
 	printf("expected garden card return value = -1\n");
-	assert(garden_val == -1);
 	
-	printf("\n >>>>> SUCCESS: Testing complete %s <<<<<\n\n", TESTCARD);
+	if (garden_val == -1) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
+
+	
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", TESTCARD);
 
 
 	return 0;

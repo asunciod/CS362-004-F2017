@@ -20,6 +20,7 @@
 
 // set NOISY_TEST to 0 to remove printfs from output
 #define NOISY_TEST 1
+#define FUNCTION_NAME "handCard()"
 
 int main() {
 	int i;
@@ -30,7 +31,7 @@ int main() {
 		, remodel, smithy, village, baron, great_hall };
 	struct gameState G;
 	
-	printf("TESTING handCard():\n\n");
+	printf("----------------- Testing function: %s ----------------\n\n", FUNCTION_NAME);
 
 	//initialize a game
 	memset(&G, 23, sizeof(struct gameState));   // clear the game state
@@ -53,11 +54,21 @@ int main() {
 		#endif
 
 		G.handCount[current_player] = 5;                 // set the number of cards on hand
-		memcpy(G.hand[current_player], "", sizeof(int) * 5);
+
+		//set all cards in hand to invalid number
+		for (i = 0; i < 5; i++) {
+			G.hand[current_player][i] = -1;
+		}
+
 		int current_card = handCard(2, &G);
 
 		//true if card is out of bounds
-		assert(current_card < 0 || current_card > 26);
+		if (current_card < 0 || current_card > 26) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		#if (NOISY_TEST == 1)
 			printf("CHECKING IF NON-VALID INTEGER RETURNS \"?\" AS CARD NAME....\n");
@@ -67,14 +78,19 @@ int main() {
 		cardNumToName(current_card, name);
 
 		//check if non-valid integer returns default name of a card, "?"
-		assert(strcmp(name, "?") == 0);
+		if (strcmp(name, "?") == 0) {
+			printf("TEST PASS: SUCCESS...\n");
+		}
+		else {
+			printf("TEST PASS: FAILED...\n");
+		}
 
 		//END TEST 1
 
 		// TEST 2 -- 
 		// check all possible valid integer values in range [0...26]
 		#if (NOISY_TEST == 1)
-				printf("CHECKING ALL POSSIBLE VALID INTEGERS [0...26]....\n\n");
+			printf("CHECKING ALL POSSIBLE VALID INTEGERS [0...26]....\n\n");
 		#endif
 		
 		// set the number of cards on hand
@@ -90,14 +106,20 @@ int main() {
 			cardNumToName(current_card, name);
 
 			//check if valid integers returns a valid name that is not the default "?"
-			assert(strcmp(name, "?") != 0);
+			if (strcmp(name, "?") != 0) {
+				printf("TEST PASS: SUCCESS...\n");
+			}
+			else {
+				printf("TEST PASS: FAILED...\n");
+			}
+
 		}
 		//END TEST 2
 
 		endTurn(&G);
 	}
 
-	printf("All tests passed!\n");
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", FUNCTION_NAME);
 
 	return 0;
 }

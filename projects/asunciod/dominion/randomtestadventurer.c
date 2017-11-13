@@ -44,6 +44,7 @@ int main() {
 
 	int min = 2;
 	int max = 4;
+	int drawntreasure = 0;
 
 	for (i = 0; i < 10; i++) {
 
@@ -59,7 +60,9 @@ int main() {
 
 		for (j = 0; j < numPlayers; j++) {
 			
-			adventurerCard(0, &testG, j, 0, temphand, 0);
+			//adventurerCard(0, &testG, j, 0, temphand, 0);
+			//adventurer_func(&drawntreasure, state, currentPlayer, cardDrawn, temphand, z);
+			adventurer_func(&drawntreasure, &testG, j, 0, temphand, 0);
 
 			int countTreasureCards = 0;
 

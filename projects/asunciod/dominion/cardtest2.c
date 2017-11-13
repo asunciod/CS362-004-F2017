@@ -35,7 +35,7 @@ int main() {
 	// initialize a game state and player cards
 	initializeGame(numPlayers, k, seed, &G);
 
-	printf("----------------- Testing Card: %s ----------------\n", TESTCARD);
+	printf("----------------- Testing Card: %s ----------------\n\n", TESTCARD);
 
 	// ----------- TEST 1: check if deck is shuffled when deckcount < 1 --------------
 	printf("TEST 1: check if deck is shuffled when deckcount < 1\n");
@@ -60,13 +60,13 @@ int main() {
 		isShuffled = currentDeck[i] != testG.deck[0][i] ? 1 : isShuffled;
 	}
 
-	// !! below two lines commented out in order to run gcov !!
-	//printf("current deckcount = %d\n, deck shuffle expected = 0\n", current_deckcount);
-	//assert(isShuffled == 0);
-
-	//assertion created to run program and not fail assertion
-	printf("current deckcount = %d\n, deck shuffle expected = 1\n", current_deckcount);
-	assert(isShuffled == 1);
+	printf("current deckcount = %d\n, deck shuffle expected = 0\n", current_deckcount);
+	if (isShuffled == 0) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
 
 	// ----------- TEST 2: check adventurer card action --------------
 	printf("TEST 2: check hand and discard count\n");
@@ -84,11 +84,22 @@ int main() {
 	cardEffect(adventurer, choice1, choice2, choice3, &testG, handpos, &bonus);
 
 	printf("current handcount = %d, expected handcount = %d\n", current_handcount, expected_handcount);
-	assert(expected_handcount == testG.handCount[0]);
+	if (expected_handcount == testG.handCount[0]) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
 
 	printf("current discardcount = %d, expected discardcount > 0\n", current_discardcount);
-	assert(testG.discardCount[0] > 0);
-		
+	
+	if (testG.discardCount[0] > 0) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
+
 	// ----------- TEST 3: check if last two cards in hand are treasure cards --------------
 	printf("TEST 3: check last two cards in hand to see if they are treasure cards\n");
 
@@ -113,9 +124,14 @@ int main() {
 	}
 
 	printf("expected last 2 cards in hand are treasure cards = 1\n");
-	assert(areTreasureCards == 1);
+	if (areTreasureCards == 1) {
+		printf("TEST PASS: SUCCESS...\n");
+	}
+	else {
+		printf("TEST PASS: FAILED...\n");
+	}
 
-	printf("\n >>>>> SUCCESS: Testing complete %s <<<<<\n\n", TESTCARD);
+	printf("\n\n >>>>> Testing complete for %s <<<<<\n\n", TESTCARD);
 
 
 	return 0;
