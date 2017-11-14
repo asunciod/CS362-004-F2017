@@ -1,0 +1,75 @@
+David Asuncion
+CS 362-400
+Teammate - David Jansen (jansedav)
+Assignment 5 - BugsInTeammateCode.txt
+
+BUG REPORT 1
+Test file used: cardtest1.c - smithy
+
+Title: player hand count is wrong after using Smithy card
+Product: Dominion game
+Classification: Serious bug
+Platform: All
+Reproduction: All the time
+Description:
+	When I play the Smithy card, I expect to have 7 cards in my
+	hand after card is played, but I get a hand count less than 7,
+	usually around 5.
+Steps to reproduce:
+	1. Initiate game
+	2. Check player hand count before using Smithy card
+	3. Use Smithy card
+	4. Check player hand count after using Smithy card
+Expected results: 7 cards in hand
+Actual result: 5 cards in hand
+
+Attachments: Test result from test code
+
+----------------- Testing Card: smithy ----------------
+
+TEST 2: check hand and played cards for smithy card
+current hand count = 5, expected = 7
+TEST PASS: FAILED...
+
+
+ >>>>> Testing complete for smithy <<<<<
+
+BUG REPORT 2
+Test file used: cardtest2.c - adventurer
+
+Title: Adventurer  - player hand count and discard count is less than expected
+Product: Dominion game
+Classification: Serious bug
+Platform: All
+Reproduction: All the time
+Description:
+	When I play the Adventurer  card, I expect to have 7 cards in my
+	hand after card is played, but I get a hand count less than 7,
+	usually around 5. Also, the discard count should be greater than 0
+Steps to reproduce:
+	1. Initiate game
+	2. Check player hand count before using Adventurer  card
+	3. Check player discard count before using Adventurer  card
+	4. Use Adventurer card
+	5. Check player hand count after using Adventurer  card
+	6. Check player discard count after using Adventurer  card
+Expected results: 
+	Player hand count: 7 cards in hand
+	Player discard count: > 0
+Actual result:
+	Player hand count: 5 cards in hand
+	Player discard count: 0
+
+Attachments: Test result from test code
+
+----------------- Testing Card: adventurer ----------------
+
+
+TEST 2: check hand and discard count
+current handcount = 5, expected handcount = 7
+TEST PASS: FAILED...
+current discardcount = 0, expected discardcount > 0
+TEST PASS: FAILED...
+
+
+ >>>>> Testing complete for adventurer <<<<<
