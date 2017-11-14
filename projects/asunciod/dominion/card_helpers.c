@@ -5,9 +5,7 @@
 
 int smithyCard(int i, int currentPlayer, struct gameState *state, int handPos) {
 	//+3 Cards
-	// [BUG] reduced loop to 1
-	// [BUG RESULT] Smithy card only draws one card instead of 3
-	for (i = 0; i < 1; i++)
+	for (i = 0; i < 3; i++)
 	{
 		drawCard(currentPlayer, state);
 	}
